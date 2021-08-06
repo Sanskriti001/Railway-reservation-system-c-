@@ -1,0 +1,856 @@
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <time.h>
+#include<iomanip>
+
+using namespace std;
+char f[10] = "f";
+
+char s[10] = "s";
+int addr, ad, flag=1, f1, d, m, i, amt;
+float tamt;
+
+// this class is used for getting and displaying user’s login details
+class login
+{
+	public:
+	char id[100];
+	char pass[100];
+	char password[10];
+	
+	// this function creates an account for user by creating id and password
+	void getid()
+	{
+		cout<< "\nEnter your id:";
+		cin >> id;
+		cout<< "Enter the Password: ";
+		cin >> password;
+		cout<< "\n";
+		strcpy(pass,password);
+	}
+	
+	// this function displays user’s created account details
+	void displayid()
+	{
+	    cout<<"Id:";
+		puts(id);
+		cout<<"Password:";
+		puts(pass);
+	}
+};
+
+// this class is used by admin mode for getting and displaying train details
+class Train
+{
+	public:
+		int tno;
+		char tname[100];
+		char bp[100];
+		char dest[100];
+		int h1,h2,m1,m2;
+		int c1,c1fare;
+		int c2,c2fare;
+		int d,m,y;
+		void getDetail()
+		{
+			cout<< "\n-----Add New details for a Train-----\n";
+			cout<< "Train no: ";
+			cin >> tno;
+			cout<< "Train Name: ";
+			cin.ignore();
+			cin.getline(tname,100);
+			cout<< "Boarding point: ";
+			cin.getline(bp,100);
+			cout<< "Destination pt: ";
+			cin.getline(dest,100);
+			cout<< "No of seats in first class & fare per ticket: ";
+			cin >> c1 >> c1fare;
+			cout<< "No of seats in second class & fare per ticket: ";
+			cin >> c2 >> c2fare;
+			cout<< "Date of travel\n";
+			cout<< "Day: ";
+			cin >> d;
+			cout<< "Month: ";
+			cin >> m;
+			cout<< "Year: ";
+			cin >> y;
+			cout<< "Time of Arrival: ";
+			cin >> h1 >> m1;
+			cout<< "Time of Departure: ";
+			cin >> h2 >> m2;
+		}
+		void displaydetail()
+		{	
+			cout << tno <<"\t "<< tname <<setw(15)<< bp <<setw(15)<< dest <<setw(15);
+			cout << c1 <<setw(15)<< c1fare <<setw(15)<< c2<<setw(15)<< c2fare <<setw(15);
+			cout << d << "-" << m << "-" << y <<setw(15);
+			cout << h1 << ":" << m1 <<setw(14)<< h2 << ":" << m2 <<"\n"; 
+		}
+		void train_list()
+		{
+			cout<<tno<<"\t"<<tname;
+		}
+};
+
+//this class is used by user mode to get and display reservation details
+class reservation
+{
+	public:
+	int pnr;
+	int tno;
+	char tname[100];
+	char bp[10];
+	char dest[100];
+	char pname[10][100];
+	int age[20];
+	char clas[10];
+	int nosr;
+	int i;
+	int d,m,y;
+	int con;
+	float amc;
+	
+	void get_resdetail()
+	{
+		cout<<"\nEnter the details as follows\n";
+		cout<<"Train no:";
+		cin>>tno;
+		cout<<"Train name:";
+		cin.ignore();
+		cin.getline(tname,100);
+		cout<<"From:";
+		cin.getline(bp,100);
+		cout<<"To:";
+		cin>>dest;
+		cout<<"No of seats required:";
+		cin>>nosr;
+		for(i=0;i<nosr;i++)
+		{
+			cout<<"Passenger name:";
+			cin >> pname[i];
+			cout<<"Passenger age:";
+			cin>>age[i];
+		}
+		cout<<"Enter the class f-first class s-second class:";
+		cin >> clas;
+		cout<<"Date of travel:";
+		cin>>d>>m>>y;
+		cout<<"Enter the concession category\n";
+		cout<<"1.Military\n2.Senior citizen\n";
+		cout<<"3.Children below 5 yrs\n4.None\n";
+		cout<<"\n your choice : ";
+		cin>>con;
+		cout<<"\n.....END OF GETTING DETAILS.....\n";
+	}
+	void display_resdetail()
+	{
+		cout<<"\n......TICKET DETAILS ARE.......\n";
+		cout<<"Pnr no: "<<pnr;
+		cout<<"\nTrain no: "<<tno;
+		cout<<"\nTrain name: "<<tname;
+		cout<<"\nBoarding point: "<<bp;
+		cout<<"\nDestination point: "<<dest;
+		cout<<"\nNo of seats reserved: "<<nosr;
+		for(i=0;i<nosr;i++)
+		{
+			cout<<"\nPassenger name: ";
+			puts(pname[i]);
+			cout<<"Passenger age: "<<age[i];
+		}
+		cout<<"\nYour class: ";
+		puts(clas);
+		cout<<"Date of reservation: "<<d<<"-"<<m<<"-"<<y;
+		cout<<"\nYour concession category: "<<con;
+		cout<<"\nYou must pay: "<<amc<<"rs"<<endl;
+		cout<<"\n***********************************\n";
+	}
+};
+
+//this class is used by user mode to get and display cancel details
+class cancel
+{
+    public:
+    int pnr;
+    int tno;
+    char tname[100];
+    char bp[10];
+    char dest[100];
+    char pname[10][100];
+    int age[20];
+    int i;
+    char clas[10];
+    int nosc;
+    int d, m, y;
+    float amr;
+    void get_cancdetail()
+    {
+        cout << "\nEnter the details as follows\n";
+        cout<< "Pnr no:";
+        cin >> pnr;
+      	cout << "Date of cancellation:";
+        cin >> d >> m >> y;
+       	cout<< "\n..........END OF GETTING DETAILS.........\n";
+    }
+    void display_cancdetail()
+    {
+        cout<< "\n..........CANCELLATION DETAILS............\n";
+        cout<< "Pnr no:" << pnr;
+        cout<< "\nTrain no:" << tno;
+        cout<< "\nTrain name:";
+        cout << tname;
+        cout<< "\nBoarding point:";
+        cout << bp;
+        cout<< "\nDestination pt:";
+        cout << dest;
+        cout<< "\nYour class:";
+        cout << clas;
+        cout<< "\nno of seats to be cancelled:" << nosc;
+        for (i = 0; i < nosc; i++)
+        {
+            cout<< "\nPassenger name:";
+            cout << pname[i];
+            cout<< "\npassenger age:" << age[i];
+        }
+    	cout<< "\nDate of cancellation:" << d << "-" << m << "-" << y;
+        cout<< "\nYou can collect:" << amr << "rs" << endl;
+        cout<< "*****************************************\n";
+        cout<< ".....END OF CANCELLATION.....\n";
+        cout<< "*****************************************\n";
+    }
+};
+
+void sign_up();
+void login_user();
+void main_menu();
+void can();
+void user();
+void database();
+void res();
+void reserve();
+void displaypassdetail();
+void cancell();
+void enquiry();
+void Searchfile();
+
+int main()
+{
+	int ch;
+	cout<<"\n\t\t\t\t~~~~~~~~~~~~~~~~~~~RAILWAY RESERVATION SYSTEM~~~~~~~~~~~~~~~~\n";
+	cout<<"\n\t\t\t\t                   MADE BY: SANSKRITI MITTAL (1913091) \n\n";
+	cout<< " -: WELCOME TO RAILWAY RESERVATION SYSTEM :-\n";
+	main_menu();
+	return 0;
+}
+
+//this is a main menu function which asks the user int which mode they’ll like to login (admin/user) 
+void main_menu()
+{
+	int ch;
+	do
+	{
+		cout<< "\n-------MAIN MENU--------\n";
+		cout<< "1.Admin mode\n2.User mode\n3.Exit \n";
+		cout<< "Enter your choice : ";
+		cin >> ch;
+		switch(ch)
+		{
+			case 1:
+				database();
+				break;
+			case 2:
+				user();
+				break;
+			default:
+				exit(0);
+		}
+	}while(ch<3);
+
+}
+
+//this function displays the admin menu after successful login
+void database()
+{
+	char password[10];
+	char pass[10] = "admin";
+	cout<< "\nEnter the Admin Password: ";
+	cin >> password;
+	Train a;
+	fstream f;
+	int ch;
+	char c;
+	if(strcmp(pass,password)!=0)
+	{
+		cout<< "Enter the password correctly \n";
+		cout<< "You are not permitted to login this mode\n";
+	}
+	if(strcmp(pass,password)==0)
+	{
+		char c;
+		do
+		{
+			cout<< "\n --- ADMIN MENU --- \n";
+			cout<< "1. Create detail database of train\n2. Add details\n3. Display details \n4.Diplay Passenger details \n";
+			cout<< "5. Return to Main Menu \n";
+			cout<< "Enter your choice : ";
+			cin >> ch;
+			switch(ch)
+			{
+				case 1:
+					f.open("t.txt",ios::out|ios::binary);
+					if(f.fail())
+					{
+						cout<<"\n could not open file!";
+					}
+					else
+					{
+						do
+						{
+							a.getDetail();
+							f.write((char *) & a,sizeof(a));
+							cout << "\nDo you want to add one more record?\n";
+							cout<< "y-for Yes\nn-for No\n";
+							cin >> c;
+						}while(c=='y');
+						f.close();
+					}
+					break;
+				case 2:
+					f.open("t.txt",ios::in|ios::out|ios::binary|ios::app);
+					if(f.fail())
+					{
+						cout<<"\n could not open file!";
+					}
+					else
+					{
+						a.getDetail();
+						f.write((char *) & a,sizeof(a));
+						f.close();
+					}
+					break;
+				case 3:
+					cout << "\nTrain No." << "\t" << "Train Name" << "\t" << "Boarding pt." << "\t" << "Destination pt."  <<"\t";
+					cout << "F-Class" <<"\t\t"<< "F-ClassFare" << "\t" << "S-Class" << "\t\t" << "S-ClassFare" <<"\t";
+					cout << "TravelDate"<< "\t"<<"ArrivalTime"<<"\t"<<"DepartureTim";
+					cout <<"\n----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+					f.open("t.txt",ios::in|ios::out|ios::binary|ios::app);
+					if(f.fail())
+					{
+						cout<<"\n could not open file!";
+					}
+					else
+					{
+						f.seekg(0);
+						while(f.read((char *) & a,sizeof(a)))
+						{
+							a.displaydetail();
+						}
+						f.close();
+					}
+					break;
+				case 4:
+					displaypassdetail();
+					break;
+				case 5: main_menu();
+						break;
+				default: cout<<"\n invalid choice!";
+			}
+		}while(ch<=5);
+	}
+}
+
+//this function displays the reservation menu for the user mode
+void reserve()
+{
+    Train a;
+    fstream f;
+	int ch;
+    do
+    {
+        cout<<"\n....RESERVATION MENUE....\n";
+		cout<< "1.Reserve\n2.Return to the main menu\n";
+        cout<< "Enter your choice:";
+        cin >> ch;
+        cout << endl;
+        switch (ch)
+        {
+        case 1:		cout<<"\n....Here are the train details : ....\n";
+        			cout << "\nTrain No." << "\t" << "Train Name" << "\t" << "Boarding pt." << "\t" << "Destination pt."  <<"\t";
+					cout << "F-Class" << "\t\t"<< "F-Class Fare" << "\t" << "S-Class" << "\t\t" << "S-Class Fare" <<"\t";
+					cout << "Date"<< "\t"<<"ArrivalTime"<<"\t"<<"DepartureTime";
+					cout <<"\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+        			f.open("t.txt",ios::in|ios::out|ios::binary|ios::app);
+        			if(f.fail())
+					{
+						cout<<"\n could not open file!";
+					}
+					else
+					{
+						f.seekg(0);
+						while(f.read((char *) & a,sizeof(a)))
+						{
+							a.displaydetail();
+						}
+						f.close();
+	            		res();
+					}
+            		break;
+        }
+    } while (ch == 1);
+}
+
+//this function reserves the ticket for the user and then displays the reservation details after reserving the ticket successfully
+void res()
+{
+    Train a;
+    reservation b;
+    fstream f1, f2;
+    time_t t;
+    f1.open("t.txt", ios::in | ios::out | ios::binary);
+    f2.open("p.txt", ios::in | ios::out | ios::binary | ios::app);
+    int ch;
+    b.get_resdetail();
+    while (f1.read((char *)&a, sizeof(a)))
+    {
+        if (a.tno == b.tno)
+        {
+            if (strcmp(b.clas, f) == 0)
+            {
+                if (a.c1 >= b.nosr)
+                {
+                    amt = a.c1fare;
+                    addr = f1.tellg();
+                    ad = sizeof(a.c1);
+                    f1.seekp(addr - (5 * ad));
+                    a.c1 = a.c1 - b.nosr;
+                    f1.write((char *)&a.c1, sizeof(a.c1));
+                    if (b.con == 1)
+                    {
+                        cout<< "\nConcession category:MILITARY PERSONNEL\n";
+                        b.amc = b.nosr * ((amt * 50) / 100);
+                    }
+                    else if (b.con == 2)
+                    {
+                        cout<< "\nConcession category:SENIOR CITIZEN\n";
+                        b.amc = b.nosr * ((amt * 60) / 100);
+                    }
+                    else if (b.con == 3)
+                    {
+                        cout<<setw(20) << "\nConcession category:CHILDERN BELOW FIVE\n";
+                        b.amc = 0.0;
+                    }
+                    else if (b.con == 4)
+                    {
+                        cout<< "\nYou cannot get any concession\n";
+                        b.amc = b.nosr * amt;
+                    }
+                    srand((unsigned)time(&t));
+                    b.pnr = rand();
+                    f2.write((char *)&b, sizeof(b));
+                    b.display_resdetail();
+                    cout<< "\n-----Your ticket is reserved-----\n";
+                }
+                else
+                {
+                    cout<< "**********Sorry req seats not available********\n";
+                }
+            }
+            else if (strcmp(b.clas, s) == 0)
+            {
+                if (a.c2 >= b.nosr)
+                {
+                    amt = a.c2fare;
+                    addr = f1.tellg();
+                    ad = sizeof(a.c2);
+                    f1.seekp(addr - (7 * ad));
+                    a.c2 = a.c2 - b.nosr;
+                    f1.write((char *)&a.c2, sizeof(a.c2));
+                    if (b.con == 1)
+                    {
+                        cout<< "\nConcession category:MILITARY PRESONNEL\n";
+                        b.amc = b.nosr * ((amt * 50) / 100);
+                    }
+                    else if (b.con == 	2)
+                    {
+                        cout<< "\nConcession category:SENIOR CITIZEN\n";
+                        b.amc = b.nosr * ((amt * 60) / 100);
+                    }
+                    else if (b.con == 3)
+                    {
+                        cout<< "\nConcession category:CHILDERN BELOW FIVE\n";
+                        b.amc = 0.0;
+                    }	
+                    else if (b.con == 4)
+                    {
+                        cout<< "\nYou cannot get any concession\n";
+                        b.amc = b.nosr * amt;
+                    }
+                    f2.write((char *)&b, sizeof(b));
+                    
+                    b.display_resdetail();
+                    cout<< "\n-----Your ticket is reserved-----\n";
+                }
+                else
+                {
+                    cout<< "********Sorry req no of seats not available*******\n";
+                }
+            }
+        }
+        else
+        {
+            flag = 0;
+        }
+    }
+    if (flag == 0)
+    {
+        cout << "\ntrain not found!";
+    }
+    f1.close();
+    f2.close();
+}
+
+// this function displays passenger details
+void displaypassdetail()
+{
+	cout<< "\n--------Passenger Details--------\n";
+	fstream f;
+	reservation b;
+	f.open("p.txt",ios::in|ios::out|ios::binary);
+	if(f.fail())
+	{
+		cout<<"\n could not open file!";
+	}
+	else
+	{
+		f.seekg(0);
+		while(f.read((char *) & b,sizeof(b)))
+		{
+			b.display_resdetail();
+		}
+		f.close();
+	}
+}
+
+// this function displays train details 
+void enquiry()
+{
+    Train a;
+    fstream f;
+    char tno[10],tname[100];
+	cout<<"\n -: WELCOME TO ENQUIRY SECTION :-\n\n";
+    cout<<"\n Here is the train list \n";
+	cout<<"\nTrain No."<<"\t"<<"Train Name";
+	cout<<"\n--------------------------------\n";
+    f.open("t.txt",ios::in|ios::out|ios::binary|ios::app);
+    if(f.fail())
+	{
+		cout<<"\n could not open file!";
+	}
+	else
+	{
+		f.seekg(0);
+		while(f.read((char *) & a,sizeof(a)))
+		{
+			 a.train_list();
+		}
+		f.close();
+		Searchfile();
+	}
+}
+
+//this function cancels the ticket and displays cancellation details (in user mode)
+void cancell()
+{
+    Train a;
+    reservation b;
+    cancel c;
+    fstream f1, f2, f3;
+    f1.open("t.txt",ios::in|ios::out|ios::binary);
+    f2.open("p.txt",ios::in|ios::out|ios::binary);
+    c.get_cancdetail();
+    while(f2.read((char *) & b,sizeof(b)))
+    {
+        if (b.pnr == c.pnr)
+        {
+            c.tno = b.tno;
+            strcpy(c.tname, b.tname);
+            strcpy(c.bp, b.bp);
+            strcpy(c.dest, b.dest);
+            c.nosc = b.nosr;
+            for (int j = 0; j < c.nosc; j++)
+            {
+                strcpy(c.pname[j], b.pname[j]);
+                c.age[j] = b.age[j];
+            }
+            strcpy(c.clas, b.clas);
+            if (strcmp(c.clas, f) == 0)
+            {
+                while (f1.read((char *)&a, sizeof(a)))
+                {
+                    if (a.tno == c.tno)
+                    {
+                        a.c1 = a.c1 + c.nosc;
+                        d = a.d;
+                        m = a.m;
+                        addr = f1.tellg();
+                        ad = sizeof(a.c1);
+                        f1.seekp(addr - (7 * ad));
+                        f1.write((char *)&a.c1, sizeof(a.c1));
+                        tamt = b.amc;
+                        if ((c.d == d) && (c.m == m))
+                        {
+                            cout<< "You are cancelling at the date of departure\n";
+                            c.amr = tamt - ((tamt * 60) / 100);
+                        }
+                        else if (c.m == m)
+                        {
+                            cout<< "You are cancelling at the month of departure\n";
+                            c.amr = tamt - ((tamt * 50) / 100);
+                        }
+                        else if (m > c.m)
+                        {
+                            cout<< "You are cancelling one month before the date of departure\n";
+                            c.amr = tamt - ((tamt * 20) / 100);
+                        }
+                        else
+                        {
+                            cout << "Cancelling after the departure\n";
+                            cout << "Your request cannot be completed\n";
+                        }
+                        c.display_cancdetail();
+                    }
+                }
+            }
+            else if (strcmp(c.clas, s) == 0)
+            {
+                while (f1.read((char *)&a, sizeof(a)))
+                {
+                    if (a.tno == c.tno)
+                    {
+                        a.c2 = a.c2 + c.nosc;
+                        d = a.d;
+                        m = a.m;
+                        addr = f1.tellg();
+                        ad = sizeof(a.c2);
+                        f1.seekp(addr - (5 * ad));
+                        f1.write((char *)&a.c2, sizeof(a.c2));
+                        tamt = b.amc;
+                        if ((c.d == d) && (c.m == m))
+                        {
+                            cout<< "You are cancelling at the date of departure\n";
+                            c.amr = tamt - ((tamt * 60) / 100);
+                        }
+                        else if (c.m == m)
+                        {
+                            cout<<"You are cancelling at the month of departure\n";
+                            c.amr = tamt - ((tamt * 50) / 100);
+                        }
+                        else if (m > c.m)
+                        {
+                            cout<<"You are cancelling one month before the date of departure\n";
+                            c.amr = tamt - ((tamt * 20) / 100);
+                        }
+                        else
+                        {
+                            cout<<"Cancelling after the departure\n";
+                            cout<<"Your request cannot be completed\n";
+                        }
+                        c.display_cancdetail();
+                    }
+                }
+            }
+        }
+        else
+        {
+            cout<<"enter correct pnr number";
+        }
+    }
+    f1.close();
+    f2.close();
+}
+
+//this function displays cancellation menu
+void can()
+{
+    int ch;
+    do
+    {
+        cout<< ".....CANCELLATION MENU.....\n";
+        cout<<"1.Cancel\n2.Return to the main menu\n";
+        cout<< "Enter your choice:";
+        cin >> ch;
+        cout << endl;
+        switch (ch)
+        {
+        case 1:
+            cancell();
+            break;
+        }
+    } while (ch == 1);
+}
+
+//this function asks user to login(if already a member) and sign up(if new)
+void user()
+{
+
+	int c;
+	cout<<"\n WELCOME USER ";
+	do
+	{
+		cout<<"\n1.Login\n2.Signup\n";
+		cout<<"enter choice : ";
+		cin>>c;
+		switch(c)
+		{
+			case 1: login_user();
+					break;
+			case 2: cout<<"\n-----Signup User-----\n";
+					sign_up();
+					login_user();
+					break;
+		}
+			
+	}while(c<=2);	
+}
+
+//this function displays the user menu upon successful login
+void login_user()
+{
+					login a;
+					int ch;
+					cout<<"\n-----Login User-----\n";
+					char password[10];
+					fstream f;
+					f.open("id.txt",ios::in|ios::out|ios::binary);
+					char id[100];
+					cout<< "Enter your ID : ";
+					cin >> id;
+					cout<< "Enter your Password : ";
+					cin >> password;
+					while(f.read((char *) & a,sizeof(a)))
+					{
+						if((strcmp(a.id,id)==0)&&(strcmp(a.pass,password)==0))
+						{
+							do
+							{
+								cout<<"\n\n....USER MENUE....";
+								cout<<"\n1.Reserve\n2.Cancel\n3.Enquiry\n4.return to user menue\n5.Return to the main menu\n";
+								cout<<"Enter your choice:";
+								cin>>ch;
+								switch(ch)
+								{
+									case 1:
+										reserve();
+										break;
+									case 2:
+										can();
+										break;
+									case 3:
+										enquiry();
+										break;
+									case 4: user();
+											break;
+									case 5: main_menu();
+											break;
+											
+								}
+							}while(ch<=3);
+						}
+						else
+						{
+							d=1;
+						}
+					}
+					if(d==1)
+					{
+						cout<<"Enter your user id and password correctly\n";
+					}
+}
+
+//this function allows user to sign up and create an account
+void sign_up()
+{
+	int ch;
+	fstream f;
+	char c;
+	login a;
+	cout<<"\n---WELCOME TO THE USER SIGNUP MENU---\n";
+	do
+	{
+		cout<< "1. Create id \n";
+		cout<< "2. Add details\n";
+		cout<< "3. Display details\n";
+		cout<< "4. Return to the main menu\n";
+		cout<<"Enter your choice: ";
+		cin>>ch;
+		switch(ch)
+		{
+			case 1:
+				    f.open("id.txt",ios::out|ios::binary);
+				    if(f.fail())
+					{
+						cout<<"\n could not open file!";
+					}
+					else
+					{
+						a.getid();
+						f.write((char *) & a,sizeof(a));
+	    				f.close();
+					}
+    				break;
+			case 2:
+				f.open("id.txt",ios::in|ios::out|ios::binary|ios::app);
+				if(f.fail())
+				{
+					cout<<"\n could not open file!";
+				}
+				else
+				{
+					a.getid();
+					f.write((char *) & a,sizeof(a));
+					f.close();
+				}
+				break;
+			case 3:
+				f.open("id.txt",ios::in|ios::out|ios::binary);
+				if(f.fail())
+				{
+					cout<<"\n could not open file!";
+				}
+				else
+				{
+					f.seekg(0);
+					while(f.read((char *) & a,sizeof(a)))
+					{
+						a.displayid();
+					}
+					f.close();
+				}
+				break;
+			}
+		}while(ch<=3);
+}
+
+//this function searches for a particular train record and then displays it when enquiry function is called
+void Searchfile()
+{
+	int t_no;
+	Train t;
+	cout<<"\n\nEnter train no. for enquiry: ";
+	cin>>t_no;
+	fstream f;
+	f.open("t.txt",ios::in|ios::binary);
+	if (f.fail())
+		cout<<"\nUnable to open file!";
+	else
+	{
+		while(f.read((char *) &t, sizeof(t)));
+		{
+			if(t.tno==t_no)
+				t.displaydetail();
+		}
+	}
+}
+
+
